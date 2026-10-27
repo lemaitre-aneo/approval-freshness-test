@@ -1,0 +1,19 @@
+name: Control pull_request_target
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  checks: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            await github.rest.checks.create({ owner, repo, name: 'fresh-prt', head_sha: context.payload.pull_request.head.sha, status: 'completed', conclusion: 'success',
+              output: { title: 'posted from pull_request_target', summary: 'test' } });

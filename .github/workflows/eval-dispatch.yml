@@ -1,0 +1,25 @@
+name: Eval dispatch and schedule
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+permissions:
+  checks: write
+  pull-requests: read
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const name = context.eventName === 'schedule' ? 'fresh-schedule' : 'fresh-dispatch';
+            const prs = await github.paginate(github.rest.pulls.list, { owner, repo, state: 'open' });
+            for (const pr of prs) {
+              await github.rest.checks.create({ owner, repo, name, head_sha: pr.head.sha, status: 'completed', conclusion: 'success',
+                output: { title: `posted from ${context.eventName}`, summary: 'test' } });
+            }
