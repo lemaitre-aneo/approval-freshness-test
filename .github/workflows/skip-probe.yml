@@ -1,0 +1,16 @@
+name: Skip probe
+
+on:
+  push:
+    branches:
+      - "**"
+
+permissions: {}
+
+jobs:
+  relay:
+    name: skip-probe
+    if: github.event.forced
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo forced
