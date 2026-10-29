@@ -1,0 +1,13 @@
+name: Filler
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions: {}
+
+jobs:
+  filler:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo filler
